@@ -5,13 +5,15 @@ input.onButtonPressed(Button.A, function () {
     )
     ESP8266_IoT.uploadData()
     basic.showNumber(1)
+    if (ESP8266_IoT.isMqttBrokerConnected()) {
+        basic.showIcon(IconNames.Sword)
+    }
     ESP8266_IoT.publishMqttMessage(
     "1",
     "topic/1",
-    ESP8266_IoT.QosList.Qos2,
+    ESP8266_IoT.QosList.Qos0,
     false
     )
-    basic.pause(20000)
 })
 input.onButtonPressed(Button.B, function () {
     ESP8266_IoT.setData(
@@ -23,10 +25,9 @@ input.onButtonPressed(Button.B, function () {
     ESP8266_IoT.publishMqttMessage(
     "0",
     "topic/1",
-    ESP8266_IoT.QosList.Qos2,
+    ESP8266_IoT.QosList.Qos0,
     false
     )
-    basic.pause(20000)
 })
 ESP8266_IoT.MqttEvent("topic/1", ESP8266_IoT.QosList.Qos0, function (message) {
     if (message == "1") {
@@ -43,6 +44,10 @@ if (ESP8266_IoT.wifiState(false)) {
 } else {
     basic.showIcon(IconNames.Yes)
 }
+ESP8266_IoT.connectThingSpeak()
+if (ESP8266_IoT.thingSpeakState(true)) {
+    basic.showIcon(IconNames.Chessboard)
+}
 ESP8266_IoT.setMQTT(
 ESP8266_IoT.SchemeList.TCP,
 "PCg9Ky0jMSEBBx4MNi0MLBY",
@@ -50,10 +55,7 @@ ESP8266_IoT.SchemeList.TCP,
 "AM7sqSWs88JFz9vEzGJxIGg9",
 ""
 )
+ESP8266_IoT.connectMQTT("mqtt3.thingspeak.com", 1883, false)
 basic.forever(function () {
-    ESP8266_IoT.connectThingSpeak()
-    ESP8266_IoT.connectMQTT("mqtt3.thingspeak.com", 1883, true)
-    if (ESP8266_IoT.isMqttBrokerConnected()) {
-        basic.showIcon(IconNames.Heart)
-    }
+	
 })
